@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Food Collections Dashboard</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        background: linear-gradient(135deg, #1e1e1e, #3a3a3a, #1e1e1e);
+        color: #f5f5f5;
+    }
+    header {
+        background: linear-gradient(90deg, #ff6f61, #ff3c2f);
+        color: white;
+        padding: 20px;
+        text-align: center;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+    .container {
+        width: 90%;
+        max-width: 1200px;
+        margin: 20px auto;
+    }
+    .search-bar {
+        margin-bottom: 20px;
+        text-align: center;
+    }
+    .search-bar input {
+        width: 60%;
+        padding: 10px;
+        border: 2px solid #555;
+        border-radius: 8px;
+        font-size: 16px;
+        background: #2a2a2a;
+        color: #f5f5f5;
+    }
+    .search-bar input::placeholder {
+        color: #aaa;
+    }
+    .food-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+    }
+    .food-card {
+        background: #2c2c2c;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+        overflow: hidden;
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .food-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 6px 18px rgba(0,0,0,0.6);
+    }
+    .food-card img {
+        width: 100%;
+        height: 160px;
+        object-fit: cover;
+    }
+    .food-card .content {
+        padding: 15px;
+    }
+    .food-card h3 {
+        margin: 0 0 10px;
+        color: #ff6f61;
+    }
+    .food-card p {
+        margin: 0;
+        font-size: 14px;
+        color: #ddd;
+    }
+</style>
+</head>
+<body>
+<header>
+    <h1>Food Collections Dashboard</h1>
+    <p>Discover various foods and their details</p>
+</header>
+
+<div class="container">
+    <div class="search-bar">
+        <input type="text" id="searchInput" placeholder="Search for food...">
+    </div>
+    <div class="food-grid" id="foodGrid">
+        <!-- Dynamic Food Cards -->
+    </div>
+</div>
+
+<script>
+const foods = [
+    { name: "Pizza", description: "A delicious Italian dish with cheese and toppings.", image: "https://source.unsplash.com/400x300/?pizza" },
+    { name: "Sushi", description: "Traditional Japanese dish with rice and seafood.", image: "https://source.unsplash.com/400x300/?sushi" },
+    { name: "Burger", description: "Juicy grilled patty with fresh vegetables.", image: "https://source.unsplash.com/400x300/?burger" },
+    { name: "Pasta", description: "Italian cuisine with creamy or tomato-based sauces.", image: "https://source.unsplash.com/400x300/?pasta" },
+    { name: "Salad", description: "Fresh mix of vegetables and dressings.", image: "https://source.unsplash.com/400x300/?salad" },
+    { name: "Ice Cream", description: "Sweet frozen dessert available in many flavors.", image: "https://source.unsplash.com/400x300/?icecream" },
+];
+
+const foodGrid = document.getElementById('foodGrid');
+const searchInput = document.getElementById('searchInput');
+
+function renderFoods(filter = "") {
+    foodGrid.innerHTML = "";
+    foods
+        .filter(food => food.name.toLowerCase().includes(filter.toLowerCase()))
+        .forEach(food => {
+            const card = document.createElement('div');
+            card.classList.add('food-card');
+            card.innerHTML = `
+                <img src="${food.image}" alt="${food.name}">
+                <div class="content">
+                    <h3>${food.name}</h3>
+                    <p>${food.description}</p>
+                </div>
+            `;
+            foodGrid.appendChild(card);
+        });
+}
+
+searchInput.addEventListener('input', () => {
+    renderFoods(searchInput.value);
+});
+
+renderFoods();
+</script>
+</body>
+</html>
