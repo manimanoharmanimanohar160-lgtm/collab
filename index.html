@@ -3,53 +3,55 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Food Collections Dashboard</title>
+<title>Time to Eat - Food Collections Dashboard</title>
 <style>
     body {
         font-family: Arial, sans-serif;
         margin: 0;
-        background: linear-gradient(135deg, #121212, #2c2c2c, #121212);
+        background: linear-gradient(135deg, #121212, #2b2b2b, #121212);
         color: #f5f5f5;
     }
     header {
         background: linear-gradient(90deg, #d4af37, #8b6f2f);
         color: white;
-        padding: 20px;
+        padding: 30px 20px;
         text-align: center;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+        box-shadow: 0 4px 10px rgba(0,0,0,0.5);
     }
+    header h1.logo {
+        font-size: 48px;
+        font-weight: bold;
+        letter-spacing: 2px;
+        margin: 0 0 10px;
+        font-family: 'Trebuchet MS', sans-serif;
+    }
+    header p {
+        font-size: 18px;
+        margin: 0;
+    }
+    /* Navigation Bar */
     nav {
-        background: linear-gradient(90deg, #1f1f1f, #2e2e2e);
         display: flex;
         justify-content: center;
-        padding: 10px 0;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+        background: #1a1a1a;
+        padding: 12px 0;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.6);
     }
     nav a {
         color: #f5f5f5;
         text-decoration: none;
-        margin: 0 20px;
-        padding: 10px 15px;
+        margin: 0 15px;
+        padding: 12px 18px;
         font-size: 16px;
         position: relative;
-        transition: color 0.3s;
+        transition: color 0.3s, transform 0.3s;
+        border-radius: 6px;
+        overflow: hidden;
+        cursor: pointer;
     }
     nav a:hover {
         color: #d4af37;
-    }
-    nav a::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: url('https://www.transparenttextures.com/patterns/black-linen.png');
-        opacity: 0;
-        transition: opacity 0.3s;
-    }
-    nav a:hover::before {
-        opacity: 0.2;
+        transform: scale(1.05);
     }
     .container {
         width: 90%;
@@ -110,75 +112,99 @@
         font-size: 16px;
         color: #ffdf5d;
     }
+    /* Modal Popup */
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.7);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+    }
+    .modal-content {
+        background: #2b2b2b;
+        padding: 20px;
+        border-radius: 10px;
+        width: 80%;
+        max-width: 500px;
+        text-align: center;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+    }
+    .modal-content h2 {
+        margin-top: 0;
+        color: #d4af37;
+    }
+    .close-btn {
+        background: #d4af37;
+        color: black;
+        padding: 8px 14px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 14px;
+        margin-top: 15px;
+    }
 </style>
 </head>
 <body>
 <header>
-    <h1>Food Collections Dashboard</h1>
+    <h1 class="logo">Time to Eat</h1>
+    <h2>Food Collections Dashboard</h2>
     <p>Discover various foods with prices in INR</p>
 </header>
 
+<!-- Navigation Menu -->
 <nav>
-    <a href="#">Order</a>
-    <a href="#">My Cart</a>
-    <a href="#">About Us</a>
-    <a href="#">Contact Us</a>
-    <a href="#">Search</a>
+    <a onclick="openModal('home')">Home</a>
+    <a onclick="openModal('about')">About Us</a>
+    <a onclick="openModal('contact')">Contact Us</a>
+    <a onclick="openModal('cart')">Add to Cart</a>
+    <a onclick="openModal('orders')">View Orders</a>
 </nav>
 
 <div class="container">
     <div class="search-bar">
         <input type="text" id="searchInput" placeholder="Search for food...">
     </div>
-    <div class="food-grid" id="foodGrid">
-        <!-- Dynamic Food Cards -->
+    <div class="food-grid" id="foodGrid"></div>
+</div>
+
+<!-- Modal Template -->
+<div class="modal" id="infoModal">
+    <div class="modal-content">
+        <h2 id="modalTitle"></h2>
+        <p id="modalContent"></p>
+        <button class="close-btn" onclick="closeModal()">Close</button>
     </div>
 </div>
 
 <script>
 const foods = [
-    { 
-        name: "Pizza", 
-        description: "Cheesy Italian delight topped with vegetables & sauces.", 
-        price: "₹499",
-        image: "https://images.unsplash.com/photo-1601924928381-39d72b5d0f98?auto=format&fit=crop&w=800&q=80"
-    },
-    { 
-        name: "Sushi", 
-        description: "Fresh Japanese sushi rolls with rice & seafood.", 
-        price: "₹850",
-        image: "https://images.unsplash.com/photo-1553621042-f6e147245754?auto=format&fit=crop&w=800&q=80"
-    },
-    { 
-        name: "Burger", 
-        description: "Juicy grilled burger with fresh vegetables & cheese.", 
-        price: "₹299",
-        image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=800&q=80"
-    },
-    { 
-        name: "Pasta", 
-        description: "Italian pasta with creamy Alfredo or spicy Arrabbiata.", 
-        price: "₹399",
-        image: "https://images.unsplash.com/photo-1525755662778-989d0524087e?auto=format&fit=crop&w=800&q=80"
-    },
-    { 
-        name: "Salad", 
-        description: "Fresh vegetable salad with tangy dressing.", 
-        price: "₹199",
-        image: "https://images.unsplash.com/photo-1550304943-4f24f54ddde9?auto=format&fit=crop&w=800&q=80"
-    },
-    { 
-        name: "Ice Cream", 
-        description: "Sweet frozen dessert available in various flavors.", 
-        price: "₹149",
-        image: "https://images.unsplash.com/photo-1629116082487-f90eafddfc19?auto=format&fit=crop&w=800&q=80"
-    },
+    { name: "Pizza", description: "Cheesy Italian delight topped with vegetables & sauces.", price: "₹499",
+      image: "https://images.unsplash.com/photo-1601924928381-39d72b5d0f98?auto=format&fit=crop&w=800&q=80" },
+    { name: "Sushi", description: "Fresh Japanese sushi rolls with rice & seafood.", price: "₹850",
+      image: "https://images.unsplash.com/photo-1553621042-f6e147245754?auto=format&fit=crop&w=800&q=80" },
+    { name: "Burger", description: "Juicy grilled burger with fresh vegetables & cheese.", price: "₹299",
+      image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=800&q=80" },
+    { name: "Pasta", description: "Italian pasta with creamy Alfredo or spicy Arrabbiata.", price: "₹399",
+      image: "https://images.unsplash.com/photo-1525755662778-989d0524087e?auto=format&fit=crop&w=800&q=80" },
+    { name: "Salad", description: "Fresh vegetable salad with tangy dressing.", price: "₹199",
+      image: "https://images.unsplash.com/photo-1550304943-4f24f54ddde9?auto=format&fit=crop&w=800&q=80" },
+    { name: "Ice Cream", description: "Sweet frozen dessert available in various flavors.", price: "₹149",
+      image: "https://images.unsplash.com/photo-1629116082487-f90eafddfc19?auto=format&fit=crop&w=800&q=80" },
 ];
 
-const foodGrid = document.getElementById('foodGrid');
-const searchInput = document.getElementById('searchInput');
+const modal = document.getElementById('infoModal');
+const modalTitle = document.getElementById('modalTitle');
+const modalContent = document.getElementById('modalContent');
 
 function renderFoods(filter = "") {
+    const foodGrid = document.getElementById('foodGrid');
     foodGrid.innerHTML = "";
     foods
         .filter(food => food.name.toLowerCase().includes(filter.toLowerCase()))
@@ -197,9 +223,26 @@ function renderFoods(filter = "") {
         });
 }
 
-searchInput.addEventListener('input', () => {
-    renderFoods(searchInput.value);
+document.getElementById('searchInput').addEventListener('input', e => {
+    renderFoods(e.target.value);
 });
+
+function openModal(type) {
+    const info = {
+        home: { title: "Welcome to Time to Eat", content: "Your favorite food collection hub!" },
+        about: { title: "About Us", content: "We bring delicious food collections from around the world." },
+        contact: { title: "Contact Us", content: "Reach us at contact@timetoeat.com or +91 9876543210." },
+        cart: { title: "Your Cart", content: "Items you add will appear here." },
+        orders: { title: "View Orders", content: "Track your orders and status here." }
+    };
+    modalTitle.textContent = info[type].title;
+    modalContent.textContent = info[type].content;
+    modal.style.display = "flex";
+}
+
+function closeModal() {
+    modal.style.display = "none";
+}
 
 renderFoods();
 </script>
