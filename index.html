@@ -23,13 +23,7 @@
         font-weight: bold;
         letter-spacing: 2px;
         margin: 0 0 10px;
-        font-family: 'Trebuchet MS', sans-serif;
     }
-    header p {
-        font-size: 18px;
-        margin: 0;
-    }
-    /* Navigation Bar */
     nav {
         display: flex;
         justify-content: center;
@@ -43,143 +37,88 @@
         margin: 0 15px;
         padding: 12px 18px;
         font-size: 16px;
-        position: relative;
         transition: color 0.3s, transform 0.3s;
         border-radius: 6px;
-        overflow: hidden;
         cursor: pointer;
     }
-    nav a:hover {
-        color: #d4af37;
-        transform: scale(1.05);
-    }
-    .container {
-        width: 90%;
-        max-width: 1200px;
-        margin: 20px auto;
-    }
-    .search-bar {
-        margin-bottom: 20px;
-        text-align: center;
-    }
+    nav a:hover { color: #d4af37; transform: scale(1.05); }
+    .container { width: 90%; max-width: 1200px; margin: 20px auto; }
+    .search-bar { margin-bottom: 20px; text-align: center; }
     .search-bar input {
-        width: 60%;
-        padding: 10px;
-        border: 2px solid #555;
-        border-radius: 8px;
-        font-size: 16px;
-        background: #2a2a2a;
-        color: #f5f5f5;
-    }
-    .search-bar input::placeholder {
-        color: #aaa;
+        width: 60%; padding: 10px; border: 2px solid #555;
+        border-radius: 8px; font-size: 16px; background: #2a2a2a; color: #f5f5f5;
     }
     .food-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
         gap: 20px;
     }
     .food-card {
-        background: #2c2c2c;
-        border-radius: 12px;
+        background: #2c2c2c; border-radius: 12px;
         box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-        overflow: hidden;
-        transition: transform 0.3s, box-shadow 0.3s;
+        overflow: hidden; transition: transform 0.3s, box-shadow 0.3s;
     }
-    .food-card:hover {
-        transform: translateY(-6px);
-        box-shadow: 0 6px 18px rgba(0,0,0,0.6);
+    .food-card:hover { transform: translateY(-6px); box-shadow: 0 6px 18px rgba(0,0,0,0.6); }
+    .food-card img { width: 100%; height: 160px; object-fit: cover; }
+    .food-card .content { padding: 15px; }
+    .food-card h3 { margin: 0 0 10px; color: #d4af37; }
+    .food-card p { margin: 0 0 8px; font-size: 14px; color: #ddd; }
+    .food-card .price { font-weight: bold; font-size: 16px; color: #ffdf5d; }
+    .food-card button {
+        margin-top: 10px; padding: 8px 12px;
+        background: #d4af37; border: none; border-radius: 6px;
+        cursor: pointer; font-weight: bold; color: black;
     }
-    .food-card img {
-        width: 100%;
-        height: 160px;
-        object-fit: cover;
-    }
-    .food-card .content {
-        padding: 15px;
-    }
-    .food-card h3 {
-        margin: 0 0 10px;
-        color: #d4af37;
-    }
-    .food-card p {
-        margin: 0 0 8px;
-        font-size: 14px;
-        color: #ddd;
-    }
-    .food-card .price {
-        font-weight: bold;
-        font-size: 16px;
-        color: #ffdf5d;
-    }
-    /* Modal Popup */
-    .modal {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0,0,0,0.7);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 1000;
-    }
-    .modal-content {
-        background: #2b2b2b;
-        padding: 20px;
-        border-radius: 10px;
-        width: 80%;
-        max-width: 500px;
-        text-align: center;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.6);
-    }
-    .modal-content h2 {
-        margin-top: 0;
-        color: #d4af37;
-    }
-    .close-btn {
-        background: #d4af37;
-        color: black;
-        padding: 8px 14px;
-        border: none;
-        border-radius: 6px;
-        cursor: pointer;
-        font-size: 14px;
-        margin-top: 15px;
-    }
+    .food-card button:hover { background: #ffdf5d; }
+    .section { display: none; }
+    .active { display: block; }
 </style>
 </head>
 <body>
 <header>
     <h1 class="logo">Time to Eat</h1>
-    <h2>Food Collections Dashboard</h2>
-    <p>Discover various foods with prices in INR</p>
+    <h2>Food Collections</h2>
+    <p>Enjoy The Food With Your Loved One</p>
 </header>
 
-<!-- Navigation Menu -->
 <nav>
-    <a onclick="openModal('home')">Home</a>
-    <a onclick="openModal('about')">About Us</a>
-    <a onclick="openModal('contact')">Contact Us</a>
-    <a onclick="openModal('cart')">Add to Cart</a>
-    <a onclick="openModal('orders')">View Orders</a>
+    <a onclick="showSection('foods')">Home</a>
+    <a onclick="showSection('about')">About Us</a>
+    <a onclick="showSection('contact')">Contact Us</a>
+    <a onclick="showSection('cart')">Add to Cart</a>
+    <a onclick="showSection('orders')">View Orders</a>
 </nav>
 
 <div class="container">
-    <div class="search-bar">
-        <input type="text" id="searchInput" placeholder="Search for food...">
+    <!-- Food Section -->
+    <div id="foods" class="section active">
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="Search for food...">
+        </div>
+        <div class="food-grid" id="foodGrid"></div>
     </div>
-    <div class="food-grid" id="foodGrid"></div>
-</div>
 
-<!-- Modal Template -->
-<div class="modal" id="infoModal">
-    <div class="modal-content">
-        <h2 id="modalTitle"></h2>
-        <p id="modalContent"></p>
-        <button class="close-btn" onclick="closeModal()">Close</button>
+    <!-- About Section -->
+    <div id="about" class="section">
+        <h2>About Us</h2>
+        <p>We bring delicious food collections from around the world.</p>
+    </div>
+
+    <!-- Contact Section -->
+    <div id="contact" class="section">
+        <h2>Contact Us</h2>
+        <p>Email: contact@timetoeat.com<br>Phone: +91 9876543210</p>
+    </div>
+
+    <!-- Cart Section -->
+    <div id="cart" class="section">
+        <h2>Your Cart</h2>
+        <ul id="cartItems"></ul>
+    </div>
+
+    <!-- Orders Section -->
+    <div id="orders" class="section">
+        <h2>Your Orders</h2>
+        <p>No orders placed yet.</p>
     </div>
 </div>
 
@@ -199,9 +138,7 @@ const foods = [
       image: "https://images.unsplash.com/photo-1629116082487-f90eafddfc19?auto=format&fit=crop&w=800&q=80" },
 ];
 
-const modal = document.getElementById('infoModal');
-const modalTitle = document.getElementById('modalTitle');
-const modalContent = document.getElementById('modalContent');
+let cart = [];
 
 function renderFoods(filter = "") {
     const foodGrid = document.getElementById('foodGrid');
@@ -217,32 +154,42 @@ function renderFoods(filter = "") {
                     <h3>${food.name}</h3>
                     <p>${food.description}</p>
                     <div class="price">${food.price}</div>
+                    <button onclick="addToCart('${food.name}')">Add to Cart</button>
                 </div>
             `;
             foodGrid.appendChild(card);
         });
 }
 
+function addToCart(itemName) {
+    const item = foods.find(f => f.name === itemName);
+    cart.push(item);
+    alert(`${itemName} added to cart!`);
+    renderCart();
+}
+
+function renderCart() {
+    const cartItems = document.getElementById('cartItems');
+    cartItems.innerHTML = "";
+    if (cart.length === 0) {
+        cartItems.innerHTML = "<li>Your cart is empty.</li>";
+        return;
+    }
+    cart.forEach(item => {
+        const li = document.createElement('li');
+        li.textContent = `${item.name} - ${item.price}`;
+        cartItems.appendChild(li);
+    });
+}
+
+function showSection(sectionId) {
+    document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+    document.getElementById(sectionId).classList.add('active');
+}
+
 document.getElementById('searchInput').addEventListener('input', e => {
     renderFoods(e.target.value);
 });
-
-function openModal(type) {
-    const info = {
-        home: { title: "Welcome to Time to Eat", content: "Your favorite food collection hub!" },
-        about: { title: "About Us", content: "We bring delicious food collections from around the world." },
-        contact: { title: "Contact Us", content: "Reach us at contact@timetoeat.com or +91 9876543210." },
-        cart: { title: "Your Cart", content: "Items you add will appear here." },
-        orders: { title: "View Orders", content: "Track your orders and status here." }
-    };
-    modalTitle.textContent = info[type].title;
-    modalContent.textContent = info[type].content;
-    modal.style.display = "flex";
-}
-
-function closeModal() {
-    modal.style.display = "none";
-}
 
 renderFoods();
 </script>
