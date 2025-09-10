@@ -41,16 +41,19 @@
                 <p class="text-center text-gray-500 mt-2">Explore a world of flavors and culinary delights.</p>
             </div>
             
-            <!-- Cart Icon and Count -->
-            <div id="cartIcon" class="relative cursor-pointer">
-                <!-- SVG Cart Icon -->
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-gray-600 hover:text-green-600 transition-colors duration-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="9" cy="21" r="1"></circle>
-                    <circle cx="20" cy="21" r="1"></circle>
-                    <path d="M1 1h4l2.68 12.33a2 2 0 0 0 1.95 1.67h8.84a2 2 0 0 0 1.95-1.67L23 6H6"></path>
-                </svg>
-                <!-- Cart Item Count Badge -->
-                <span id="cartCount" class="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white bg-red-600 transform translate-x-1/2 -translate-y-1/2 rounded-full">0</span>
+            <!-- Header Actions -->
+            <div class="flex items-center gap-4">
+                <!-- Cart Icon and Count -->
+                <div id="cartIcon" class="relative cursor-pointer">
+                    <!-- SVG Cart Icon -->
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-gray-600 hover:text-green-600 transition-colors duration-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="9" cy="21" r="1"></circle>
+                        <circle cx="20" cy="21" r="1"></circle>
+                        <path d="M1 1h4l2.68 12.33a2 2 0 0 0 1.95 1.67h8.84a2 2 0 0 0 1.95-1.67L23 6H6"></path>
+                    </svg>
+                    <!-- Cart Item Count Badge -->
+                    <span id="cartCount" class="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white bg-red-600 transform translate-x-1/2 -translate-y-1/2 rounded-full">0</span>
+                </div>
             </div>
         </header>
 
@@ -175,26 +178,49 @@
             </div>
         </div>
     </div>
-
-    <!-- Online Payment Modal -->
-    <div id="paymentModal" class="modal fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center p-4 hidden z-50">
-        <div class="bg-white rounded-xl shadow-2xl p-6 w-full max-w-lg transform scale-95 transition-all duration-300 ease-in-out text-center">
-            <h2 class="text-2xl font-bold mb-4">Simulating <span id="paymentMethodName"></span> Payment...</h2>
-            <div class="flex justify-center items-center">
-                <div class="w-16 h-16 border-4 border-blue-400 border-t-transparent rounded-full animate-spin"></div>
+    
+    <!-- Processing Order Modal -->
+    <div id="processingModal" class="modal fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center p-4 hidden z-50">
+        <div class="bg-white rounded-xl shadow-2xl p-6 w-full max-w-sm transform scale-95 transition-all duration-300 ease-in-out text-center">
+            <div class="flex justify-center mb-4">
+                <svg class="animate-spin h-12 w-12 text-green-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
             </div>
-            <p class="text-gray-600 mt-4">Please wait, do not refresh or close this page.</p>
+            <h2 class="text-2xl font-bold mb-2">Processing Your Order...</h2>
+            <p class="text-gray-600">Please wait while we finalize your order details.</p>
         </div>
     </div>
-    
-    <!-- Order Placed Success Modal -->
-    <div id="successModal" class="modal fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center p-4 hidden z-50">
-        <div class="bg-white rounded-xl shadow-2xl p-6 text-center transform scale-95 transition-all duration-300 ease-in-out">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-20 w-20 text-green-500 mx-auto mb-4" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-            </svg>
-            <h2 class="text-2xl font-bold mb-2">Order Placed Successfully!</h2>
-            <p class="text-gray-600">Your delicious food is on its way. Thank you for your order!</p>
+
+    <!-- Order Confirmation Receipt Modal -->
+    <div id="receiptModal" class="modal fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center p-4 hidden z-50">
+        <div class="bg-white rounded-xl shadow-2xl p-6 w-full max-w-2xl transform scale-95 transition-all duration-300 ease-in-out">
+            <div class="flex justify-between items-center mb-4 pb-2 border-b-2">
+                <h2 class="text-2xl font-bold text-green-600">Invoice</h2>
+                <button id="closeReceiptModal" class="text-gray-500 hover:text-gray-900 text-2xl font-bold transition-colors duration-300">&times;</button>
+            </div>
+            <p class="text-gray-700 mb-4">Thank you for your order. We've received your request and your food will be delivered shortly.</p>
+            
+            <div class="space-y-4 mb-6">
+                <div>
+                    <p class="text-sm font-bold text-gray-800">Customer Details:</p>
+                    <p class="text-gray-600"><span class="font-semibold">Name:</span> <span id="receiptCustomerName"></span></p>
+                    <p class="text-gray-600"><span class="font-semibold">Phone:</span> <span id="receiptCustomerPhone"></span></p>
+                    <p class="text-gray-600"><span class="font-semibold">Address:</span> <span id="receiptCustomerAddress"></span></p>
+                </div>
+                <div>
+                    <p class="text-sm font-bold text-gray-800">Order Summary:</p>
+                    <div id="receiptItemsContainer" class="mt-2 space-y-1">
+                        <!-- Order items will be injected here -->
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flex justify-between items-center pt-4 border-t-2">
+                <span class="text-xl font-bold">Total: <span id="receiptTotal">₹0</span></span>
+                <button class="bg-blue-600 text-white px-4 py-2 rounded-xl text-sm font-semibold shadow-md hover:bg-blue-700 transition-colors duration-300">Download Invoice</button>
+            </div>
         </div>
     </div>
 
@@ -209,7 +235,8 @@
                     category: "main",
                     image_url: "https://placehold.co/600x400/525252/FFF?text=Pizza",
                     tags: ["Italian", "cheese", "vegetarian"],
-                    rate: 450
+                    rate: 450,
+                    discount_percentage: 20
                 },
                 {
                     name: "Decadent Chocolate Cake",
@@ -217,7 +244,8 @@
                     category: "dessert",
                     image_url: "https://placehold.co/600x400/525252/FFF?text=Cake",
                     tags: ["chocolate", "sweet", "baked"],
-                    rate: 320
+                    rate: 320,
+                    discount_percentage: null
                 },
                 {
                     name: "Spicy Chicken Tacos",
@@ -225,7 +253,8 @@
                     category: "main",
                     image_url: "https://placehold.co/600x400/525252/FFF?text=Tacos",
                     tags: ["Mexican", "spicy", "chicken"],
-                    rate: 280
+                    rate: 280,
+                    discount_percentage: 10
                 },
                 {
                     name: "Fresh Strawberry Smoothie",
@@ -233,7 +262,8 @@
                     category: "drink",
                     image_url: "https://placehold.co/600x400/525252/FFF?text=Smoothie",
                     tags: ["fruit", "healthy", "blended"],
-                    rate: 180
+                    rate: 180,
+                    discount_percentage: null
                 },
                 {
                     name: "Crispy Spring Rolls",
@@ -241,7 +271,8 @@
                     category: "appetizer",
                     image_url: "https://placehold.co/600x400/525252/FFF?text=Spring+Rolls",
                     tags: ["Asian", "fried", "snack"],
-                    rate: 210
+                    rate: 210,
+                    discount_percentage: null
                 },
                 {
                     name: "Grilled Salmon with Asparagus",
@@ -249,7 +280,8 @@
                     category: "main",
                     image_url: "https://placehold.co/600x400/525252/FFF?text=Salmon",
                     tags: ["seafood", "healthy", "dinner"],
-                    rate: 750
+                    rate: 750,
+                    discount_percentage: 15
                 },
                 {
                     name: "Fruit Salad with Mint",
@@ -257,7 +289,8 @@
                     category: "dessert",
                     image_url: "https://placehold.co/600x400/525252/FFF?text=Fruit+Salad",
                     tags: ["fruit", "healthy", "light"],
-                    rate: 150
+                    rate: 150,
+                    discount_percentage: null
                 },
                 {
                     name: "Iced Caramel Macchiato",
@@ -265,7 +298,8 @@
                     category: "drink",
                     image_url: "https://placehold.co/600x400/525252/FFF?text=Coffee",
                     tags: ["coffee", "iced", "sweet"],
-                    rate: 220
+                    rate: 220,
+                    discount_percentage: 5
                 },
                 {
                     name: "Cheese and Charcuterie Board",
@@ -273,7 +307,8 @@
                     category: "appetizer",
                     image_url: "https://placehold.co/600x400/525252/FFF?text=Cheese+Board",
                     tags: ["platter", "snack", "party"],
-                    rate: 680
+                    rate: 680,
+                    discount_percentage: null
                 },
                 {
                     name: "Beef and Broccoli Stir-Fry",
@@ -281,7 +316,8 @@
                     category: "main",
                     image_url: "https://placehold.co/600x400/525252/FFF?text=Stir-Fry",
                     tags: ["Chinese", "beef", "vegetables"],
-                    rate: 550
+                    rate: 550,
+                    discount_percentage: null
                 },
                 {
                     name: "Mango Lassi",
@@ -289,7 +325,8 @@
                     category: "drink",
                     image_url: "https://placehold.co/600x400/525252/FFF?text=Mango+Lassi",
                     tags: ["Indian", "yogurt", "fruit"],
-                    rate: 175
+                    rate: 175,
+                    discount_percentage: null
                 },
                 {
                     name: "Paneer Tikka Masala",
@@ -297,7 +334,8 @@
                     category: "main",
                     image_url: "https://placehold.co/600x400/525252/FFF?text=Paneer+Tikka",
                     tags: ["Indian", "vegetarian", "curry"],
-                    rate: 420
+                    rate: 420,
+                    discount_percentage: 25
                 },
                 {
                     name: "Gulab Jamun",
@@ -305,7 +343,8 @@
                     category: "dessert",
                     image_url: "https://placehold.co/600x400/525252/FFF?text=Gulab+Jamun",
                     tags: ["Indian", "sweet", "dessert"],
-                    rate: 190
+                    rate: 190,
+                    discount_percentage: null
                 }
             ];
 
@@ -326,10 +365,16 @@
             const confirmOrderBtn = document.getElementById('confirmOrderBtn');
             const onlinePaymentRadio = document.getElementById('onlinePayment');
             const onlinePaymentOptions = document.getElementById('onlinePaymentOptions');
-            const paymentModal = document.getElementById('paymentModal');
-            const paymentMethodName = document.getElementById('paymentMethodName');
-            const successModal = document.getElementById('successModal');
             
+            const processingModal = document.getElementById('processingModal');
+            const receiptModal = document.getElementById('receiptModal');
+            const closeReceiptModalBtn = document.getElementById('closeReceiptModal');
+            const receiptCustomerName = document.getElementById('receiptCustomerName');
+            const receiptCustomerPhone = document.getElementById('receiptCustomerPhone');
+            const receiptCustomerAddress = document.getElementById('receiptCustomerAddress');
+            const receiptItemsContainer = document.getElementById('receiptItemsContainer');
+            const receiptTotal = document.getElementById('receiptTotal');
+
             let cart = [];
 
             /**
@@ -346,12 +391,22 @@
             window.addToCart = (foodName) => {
                 const foodItem = foodCollections.find(food => food.name === foodName);
                 if (foodItem) {
-                    cart.push(foodItem);
+                    const priceToAdd = foodItem.discount_percentage
+                        ? foodItem.rate - (foodItem.rate * foodItem.discount_percentage / 100)
+                        : foodItem.rate;
+
+                    const cartItem = {
+                        name: foodItem.name,
+                        price: priceToAdd
+                    };
+                    
+                    cart.push(cartItem);
                     updateCartCount();
 
                     // Show a temporary notification
-                    notificationElement.classList.remove('opacity-0', 'pointer-events-none');
-                    notificationElement.classList.add('opacity-100');
+                    notificationElement.textContent = 'Item added to cart!';
+                    notificationElement.classList.remove('opacity-0', 'pointer-events-none', 'bg-red-500');
+                    notificationElement.classList.add('opacity-100', 'bg-green-500');
                     setTimeout(() => {
                         notificationElement.classList.add('opacity-0', 'pointer-events-none');
                         notificationElement.classList.remove('opacity-100');
@@ -366,22 +421,20 @@
                 cartItemsContainer.innerHTML = '';
                 if (cart.length === 0) {
                     cartItemsContainer.innerHTML = '<p class="text-center text-gray-500 py-4">Your cart is empty.</p>';
-                    cartTotalElement.textContent = '₹0';
-                    return;
                 }
 
                 let total = 0;
                 cart.forEach(item => {
-                    total += item.rate;
+                    total += item.price;
                     const cartItemHtml = `
                         <div class="flex items-center justify-between py-2 border-b last:border-b-0">
                             <span class="text-gray-800">${item.name}</span>
-                            <span class="font-semibold text-green-600">₹${item.rate}</span>
+                            <span class="font-semibold text-green-600">₹${item.price.toFixed(2)}</span>
                         </div>
                     `;
                     cartItemsContainer.insertAdjacentHTML('beforeend', cartItemHtml);
                 });
-                cartTotalElement.textContent = `₹${total}`;
+                cartTotalElement.textContent = `₹${total.toFixed(2)}`;
             };
 
             /**
@@ -420,40 +473,58 @@
                 detailsModal.classList.add('hidden');
                 document.body.style.overflow = 'auto';
             };
-            
+
             /**
-             * Shows the success modal and clears the cart.
+             * Opens the order confirmation receipt modal.
+             * @param {Object} orderData - The data for the confirmed order.
              */
-            const showSuccessModal = () => {
-                cart = []; // Clear the cart
-                updateCartCount();
+            const openReceiptModal = (orderData) => {
+                receiptCustomerName.textContent = orderData.name;
+                receiptCustomerPhone.textContent = orderData.phone;
+                receiptCustomerAddress.textContent = orderData.address;
+                receiptTotal.textContent = `₹${orderData.total.toFixed(2)}`;
                 
-                successModal.classList.remove('hidden');
-                document.body.style.overflow = 'hidden'; // Prevents scrolling
+                receiptItemsContainer.innerHTML = '';
+                orderData.items.forEach(item => {
+                    const itemHtml = `
+                        <div class="flex justify-between items-center text-gray-600">
+                            <span>${item.name}</span>
+                            <span>₹${item.price.toFixed(2)}</span>
+                        </div>
+                    `;
+                    receiptItemsContainer.insertAdjacentHTML('beforeend', itemHtml);
+                });
 
-                // Hide the success message after 3 seconds
-                setTimeout(() => {
-                    successModal.classList.add('hidden');
-                    document.body.style.overflow = 'auto';
-                }, 3000);
-            };
-
-            /**
-             * Simulates a payment process and shows the final success modal.
-             */
-            const simulatePayment = (method) => {
-                detailsModal.classList.add('hidden');
-                paymentModal.classList.remove('hidden');
-                paymentMethodName.textContent = method;
-
-                setTimeout(() => {
-                    paymentModal.classList.add('hidden');
-                    showSuccessModal();
-                }, 2000); // Simulate 2-second payment processing time
+                receiptModal.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
             };
             
             /**
-             * Validates form details and proceeds with the order.
+             * Closes the order confirmation receipt modal.
+             */
+            const closeReceiptModal = () => {
+                receiptModal.classList.add('hidden');
+                document.body.style.overflow = 'auto';
+            };
+
+            /**
+             * Shows the processing modal.
+             */
+            const openProcessingModal = () => {
+                processingModal.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+            };
+
+            /**
+             * Hides the processing modal.
+             */
+            const closeProcessingModal = () => {
+                processingModal.classList.add('hidden');
+                document.body.style.overflow = 'auto';
+            };
+            
+            /**
+             * Validates form details, processes the order, and shows a confirmation message.
              */
             const confirmOrder = (event) => {
                 event.preventDefault();
@@ -463,15 +534,15 @@
                 const address = document.getElementById('customerAddress').value;
 
                 if (!name || !phone || !address || phone.length !== 10) {
-                    // Replaced alert() with a custom message.
-                    document.getElementById('notification').textContent = 'Please fill out all the details correctly (Phone number must be 10 digits).';
-                    document.getElementById('notification').classList.remove('opacity-0', 'pointer-events-none', 'bg-green-500');
-                    document.getElementById('notification').classList.add('opacity-100', 'bg-red-500');
+                    // Show error message on the notification bar.
+                    notificationElement.textContent = 'Please fill out all the details correctly (Phone number must be 10 digits).';
+                    notificationElement.classList.remove('opacity-0', 'pointer-events-none', 'bg-green-500');
+                    notificationElement.classList.add('opacity-100', 'bg-red-500');
                     setTimeout(() => {
-                        document.getElementById('notification').classList.add('opacity-0', 'pointer-events-none');
-                        document.getElementById('notification').classList.remove('opacity-100', 'bg-red-500');
-                        document.getElementById('notification').textContent = 'Item added to cart!';
-                        document.getElementById('notification').classList.add('bg-green-500');
+                        notificationElement.classList.add('opacity-0', 'pointer-events-none');
+                        notificationElement.classList.remove('opacity-100', 'bg-red-500');
+                        notificationElement.textContent = 'Item added to cart!';
+                        notificationElement.classList.add('bg-green-500');
                     }, 3000);
                     return;
                 }
@@ -481,23 +552,43 @@
                 if (paymentOption === 'onlinePayment') {
                     const onlinePaymentMethod = document.querySelector('input[name="onlinePaymentOption"]:checked');
                     if (!onlinePaymentMethod) {
-                        // Replaced alert() with a custom message.
-                        document.getElementById('notification').textContent = 'Please select an online payment method.';
-                        document.getElementById('notification').classList.remove('opacity-0', 'pointer-events-none', 'bg-green-500');
-                        document.getElementById('notification').classList.add('opacity-100', 'bg-red-500');
+                        // Show error message on the notification bar.
+                        notificationElement.textContent = 'Please select an online payment method.';
+                        notificationElement.classList.remove('opacity-0', 'pointer-events-none', 'bg-green-500');
+                        notificationElement.classList.add('opacity-100', 'bg-red-500');
                         setTimeout(() => {
-                            document.getElementById('notification').classList.add('opacity-0', 'pointer-events-none');
-                            document.getElementById('notification').classList.remove('opacity-100', 'bg-red-500');
-                            document.getElementById('notification').textContent = 'Item added to cart!';
-                            document.getElementById('notification').classList.add('bg-green-500');
+                            notificationElement.classList.add('opacity-0', 'pointer-events-none');
+                            notificationElement.classList.remove('opacity-100', 'bg-red-500');
+                            notificationElement.textContent = 'Item added to cart!';
+                            notificationElement.classList.add('bg-green-500');
                         }, 3000);
                         return;
                     }
-                    simulatePayment(onlinePaymentMethod.value);
-                } else {
-                    closeDetailsModal();
-                    showSuccessModal();
                 }
+                
+                // Get order details before clearing the cart
+                const orderData = {
+                    name,
+                    phone,
+                    address,
+                    items: [...cart],
+                    total: cart.reduce((sum, item) => sum + item.price, 0)
+                };
+
+                // Clear the form and close the details modal
+                orderForm.reset();
+                closeDetailsModal();
+                
+                // Simulate backend processing
+                openProcessingModal();
+                setTimeout(() => {
+                    closeProcessingModal();
+                    openReceiptModal(orderData);
+                    // Clear the cart and update the count
+                    cart = [];
+                    updateCartCount();
+                }, 2000); // Simulate 2 seconds of network delay
+
             };
             
             /**
@@ -511,9 +602,21 @@
                     return;
                 }
                 foodsToRender.forEach(food => {
+                    const finalRate = food.discount_percentage
+                        ? (food.rate - (food.rate * food.discount_percentage / 100)).toFixed(2)
+                        : food.rate.toFixed(2);
+                        
+                    const priceHtml = food.discount_percentage
+                        ? `<div class="flex items-center gap-2">
+                             <span class="text-xl font-bold text-green-600">₹${finalRate}</span>
+                             <span class="text-sm text-gray-400 line-through">₹${food.rate}</span>
+                           </div>`
+                        : `<span class="text-xl font-bold text-green-600">₹${finalRate}</span>`;
+
                     const foodCard = `
-                        <div class="bg-white rounded-xl shadow-md overflow-hidden transform hover:scale-105 transition-all duration-300 ease-in-out border border-gray-200 cursor-pointer" onclick="addToCart('${food.name.replace(/'/g, "\\'")}')">
+                        <div class="bg-white rounded-xl shadow-md overflow-hidden transform hover:scale-105 transition-all duration-300 ease-in-out border border-gray-200 cursor-pointer relative" onclick="addToCart('${food.name.replace(/'/g, "\\'")}')">
                             <img src="${food.image_url}" alt="${food.name}" class="w-full h-48 object-cover">
+                            ${food.discount_percentage ? `<div class="absolute top-2 right-2 bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">-${food.discount_percentage}% OFF</div>` : ''}
                             <div class="p-6">
                                 <h3 class="font-bold text-xl text-gray-900 truncate">${food.name}</h3>
                                 <p class="text-gray-600 text-sm mt-2 line-clamp-3">${food.description}</p>
@@ -522,7 +625,7 @@
                                     ${food.tags.map(tag => `<span class="bg-gray-200 text-gray-700 text-xs font-medium px-2.5 py-0.5 rounded-full">${tag}</span>`).join('')}
                                 </div>
                                 <div class="mt-4 text-right">
-                                    <span class="text-xl font-bold text-green-600">₹${food.rate}</span>
+                                    ${priceHtml}
                                 </div>
                             </div>
                         </div>
@@ -554,6 +657,7 @@
             placeOrderBtn.addEventListener('click', openDetailsModal);
             closeDetailsModalBtn.addEventListener('click', closeDetailsModal);
             orderForm.addEventListener('submit', confirmOrder);
+            closeReceiptModalBtn.addEventListener('click', closeReceiptModal);
             
             // Toggle online payment options visibility
             document.querySelectorAll('input[name="paymentOption"]').forEach(radio => {
@@ -579,10 +683,9 @@
                 }
             });
             
-            paymentModal.addEventListener('click', (e) => {
-                // Prevent closing the payment modal while processing
-                if (e.target.id === 'paymentModal') {
-                    // Do nothing
+            receiptModal.addEventListener('click', (e) => {
+                if (e.target.id === 'receiptModal') {
+                    closeReceiptModal();
                 }
             });
 
