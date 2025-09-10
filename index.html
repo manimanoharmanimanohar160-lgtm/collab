@@ -1,239 +1,594 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Time to Eat - Food Collections Dashboard</title>
-<style>
-    body {
-        font-family: Arial, sans-serif;
-        margin: 0;
-        background: linear-gradient(135deg, #121212, #2b2b2b, #121212);
-        color: #f5f5f5;
-    }
-    header {
-        background: linear-gradient(90deg, #d4af37, #8b6f2f);
-        color: white;
-        padding: 40px 20px;
-        text-align: center;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-    }
-    header h1.logo {
-        font-size: 64px;
-        font-weight: 900;
-        letter-spacing: 3px;
-        margin: 0 0 15px;
-        text-transform: uppercase;
-        color: #ffdf5d;
-        text-shadow: 0 0 10px #d4af37, 0 0 20px #ffdf5d, 0 0 30px #d4af37;
-    }
-    header h2 {
-        font-size: 28px;
-        margin: 5px 0;
-    }
-    nav {
-        display: flex;
-        justify-content: center;
-        background: #1a1a1a;
-        padding: 12px 0;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.6);
-    }
-    nav a {
-        color: #f5f5f5;
-        text-decoration: none;
-        margin: 0 15px;
-        padding: 12px 18px;
-        font-size: 16px;
-        transition: color 0.3s, transform 0.3s;
-        border-radius: 6px;
-        cursor: pointer;
-    }
-    nav a:hover { color: #d4af37; transform: scale(1.05); }
-    .container { width: 90%; max-width: 1200px; margin: 20px auto; }
-    .search-bar { margin-bottom: 20px; text-align: center; }
-    .search-bar input {
-        width: 60%; padding: 10px; border: 2px solid #555;
-        border-radius: 8px; font-size: 16px; background: #2a2a2a; color: #f5f5f5;
-    }
-    .food-grid {
-        display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 20px;
-    }
-    .food-card {
-        background: #2c2c2c; border-radius: 12px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-        overflow: hidden; transition: transform 0.3s, box-shadow 0.3s;
-    }
-    .food-card:hover { transform: translateY(-6px); box-shadow: 0 6px 18px rgba(0,0,0,0.6); }
-    .food-card img { width: 100%; height: 160px; object-fit: cover; }
-    .food-card .content { padding: 15px; }
-    .food-card h3 { margin: 0 0 10px; color: #d4af37; }
-    .food-card p { margin: 0 0 8px; font-size: 14px; color: #ddd; }
-    .food-card .price { font-weight: bold; font-size: 16px; color: #ffdf5d; }
-    .food-card button {
-        margin-top: 10px; padding: 8px 12px;
-        background: #d4af37; border: none; border-radius: 6px;
-        cursor: pointer; font-weight: bold; color: black;
-    }
-    .food-card button:hover { background: #ffdf5d; }
-    .section { display: none; }
-    .active { display: block; }
-    .order-confirm {
-        margin-top: 20px; padding: 10px 20px;
-        background: #d4af37; color: black; font-weight: bold;
-        border: none; border-radius: 6px; cursor: pointer;
-    }
-    .order-confirm:hover { background: #ffdf5d; }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Food Collections Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Pacifico&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+            color: #1f2937;
+        }
+        .title-font {
+            font-family: 'Pacifico', cursive;
+        }
+        .modal {
+            transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+        }
+        .modal.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+        .payment-option-label {
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+        input[name="onlinePaymentOption"]:checked + label {
+            background-color: #e0f2fe;
+            border-color: #3b82f6;
+        }
+    </style>
 </head>
-<body>
-<header>
-    <h1 class="logo">Time to Eat</h1>
-    <h2>Food Collections</h2>
-    <p>Enjoy The Food With Your Loved One</p>
-</header>
+<body class="bg-gray-100 p-4 sm:p-8">
 
-<nav>
-    <a onclick="showSection('foods')">Home</a>
-    <a onclick="showSection('about')">About Us</a>
-    <a onclick="showSection('contact')">Contact Us</a>
-    <a onclick="showSection('cart')">Add to Cart</a>
-    <a onclick="showSection('orders')">View Orders</a>
-</nav>
+    <!-- Dashboard Container -->
+    <div class="max-w-7xl mx-auto">
+        <header class="bg-white p-6 rounded-2xl shadow-lg mb-8 flex items-center justify-between">
+            <div>
+                <h1 class="title-font text-4xl sm:text-5xl font-bold text-center text-green-600">Foodie.com</h1>
+                <p class="text-center text-gray-500 mt-2">Explore a world of flavors and culinary delights.</p>
+            </div>
+            
+            <!-- Cart Icon and Count -->
+            <div id="cartIcon" class="relative cursor-pointer">
+                <!-- SVG Cart Icon -->
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-gray-600 hover:text-green-600 transition-colors duration-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="9" cy="21" r="1"></circle>
+                    <circle cx="20" cy="21" r="1"></circle>
+                    <path d="M1 1h4l2.68 12.33a2 2 0 0 0 1.95 1.67h8.84a2 2 0 0 0 1.95-1.67L23 6H6"></path>
+                </svg>
+                <!-- Cart Item Count Badge -->
+                <span id="cartCount" class="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white bg-red-600 transform translate-x-1/2 -translate-y-1/2 rounded-full">0</span>
+            </div>
+        </header>
 
-<div class="container">
-    <!-- Food Section -->
-    <div id="foods" class="section active">
-        <div class="search-bar">
-            <input type="text" id="searchInput" placeholder="Search for food...">
+        <!-- Filter and Search Section -->
+        <div class="flex flex-col sm:flex-row gap-4 mb-8">
+            <input type="text" id="searchInput" placeholder="Search for a food item..."
+                   class="flex-grow p-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm transition duration-300 ease-in-out">
+            <select id="categoryFilter"
+                    class="p-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm transition duration-300 ease-in-out sm:w-1/4">
+                <option value="all">All Categories</option>
+                <option value="main">Main Dishes</option>
+                <option value="dessert">Desserts</option>
+                <option value="drink">Drinks</option>
+                <option value="appetizer">Appetizers</option>
+            </select>
         </div>
-        <div class="food-grid" id="foodGrid"></div>
+
+        <!-- Food Cards Grid -->
+        <div id="foodContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <!-- Food cards will be injected here by JavaScript -->
+        </div>
+
+        <!-- Item added notification -->
+        <div id="notification" class="fixed bottom-4 left-1/2 transform -translate-x-1/2 px-6 py-3 bg-green-500 text-white rounded-xl shadow-lg transition-opacity duration-300 opacity-0 pointer-events-none z-50">
+            Item added to cart!
+        </div>
+
     </div>
 
-    <!-- About Section -->
-    <div id="about" class="section">
-        <h2>About Us</h2>
-        <p>We bring delicious food collections from around the world, freshly curated for your taste buds!</p>
+    <!-- Cart Modal -->
+    <div id="cartModal" class="modal fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center p-4 hidden z-50">
+        <div class="bg-white rounded-xl shadow-2xl p-6 w-full max-w-2xl transform scale-95 transition-all duration-300 ease-in-out">
+            <div class="flex justify-between items-center mb-4 pb-2 border-b-2">
+                <h2 class="text-2xl font-bold">Your Cart</h2>
+                <button id="closeCartModal" class="text-gray-500 hover:text-gray-900 text-2xl font-bold transition-colors duration-300">&times;</button>
+            </div>
+            <div id="cartItems" class="max-h-96 overflow-y-auto mb-4">
+                <!-- Cart items will be injected here -->
+            </div>
+            <div class="flex justify-between items-center pt-4 border-t-2">
+                <span class="text-xl font-bold">Total: <span id="cartTotal">₹0</span></span>
+                <button id="placeOrderBtn" class="bg-green-600 text-white px-6 py-3 rounded-xl font-semibold shadow-md hover:bg-green-700 transition-colors duration-300">Place Order</button>
+            </div>
+        </div>
     </div>
 
-    <!-- Contact Section -->
-    <div id="contact" class="section">
-        <h2>Contact Us</h2>
-        <p>Email: contact@timetoeat.com<br>Phone: +91 9876543210</p>
-    </div>
-
-    <!-- Cart Section -->
-    <div id="cart" class="section">
-        <h2>Your Cart</h2>
-        <ul id="cartItems"></ul>
-        <button class="order-confirm" onclick="confirmOrder()">Confirm Order</button>
-    </div>
-
-    <!-- Orders Section -->
-    <div id="orders" class="section">
-        <h2>Your Orders</h2>
-        <ul id="orderList"></ul>
-    </div>
-</div>
-
-<script>
-const foods = [
-    { name: "Pizza", description: "Cheesy Italian delight topped with vegetables & sauces.", price: "₹499",
-      image: "https://images.unsplash.com/photo-1601924928381-39d72b5d0f98?auto=format&fit=crop&w=800&q=80" },
-    { name: "Sushi", description: "Fresh Japanese sushi rolls with rice & seafood.", price: "₹850",
-      image: "https://images.unsplash.com/photo-1553621042-f6e147245754?auto=format&fit=crop&w=800&q=80" },
-    { name: "Burger", description: "Juicy grilled burger with fresh vegetables & cheese.", price: "₹299",
-      image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=800&q=80" },
-    { name: "Pasta", description: "Italian pasta with creamy Alfredo or spicy Arrabbiata.", price: "₹399",
-      image: "https://images.unsplash.com/photo-1525755662778-989d0524087e?auto=format&fit=crop&w=800&q=80" },
-    { name: "Salad", description: "Fresh vegetable salad with tangy dressing.", price: "₹199",
-      image: "https://images.unsplash.com/photo-1550304943-4f24f54ddde9?auto=format&fit=crop&w=800&q=80" },
-    { name: "Ice Cream", description: "Sweet frozen dessert available in various flavors.", price: "₹149",
-      image: "https://images.unsplash.com/photo-1629116082487-f90eafddfc19?auto=format&fit=crop&w=800&q=80" },
-];
-
-let cart = [];
-let orders = [];
-
-function renderFoods(filter = "") {
-    const foodGrid = document.getElementById('foodGrid');
-    foodGrid.innerHTML = "";
-    foods
-        .filter(food => food.name.toLowerCase().includes(filter.toLowerCase()))
-        .forEach(food => {
-            const card = document.createElement('div');
-            card.classList.add('food-card');
-            card.innerHTML = `
-                <img src="${food.image}" alt="${food.name}">
-                <div class="content">
-                    <h3>${food.name}</h3>
-                    <p>${food.description}</p>
-                    <div class="price">${food.price}</div>
-                    <button onclick="addToCart('${food.name}')">Add to Cart</button>
+    <!-- Details and Payment Modal -->
+    <div id="detailsModal" class="modal fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center p-4 hidden z-50">
+        <div class="bg-white rounded-xl shadow-2xl p-6 w-full max-w-lg transform scale-95 transition-all duration-300 ease-in-out">
+            <div class="flex justify-between items-center mb-4 pb-2 border-b-2">
+                <h2 class="text-2xl font-bold">Customer Details & Payment</h2>
+                <button id="closeDetailsModal" class="text-gray-500 hover:text-gray-900 text-2xl font-bold transition-colors duration-300">&times;</button>
+            </div>
+            <form id="orderForm" class="space-y-4">
+                <div>
+                    <label for="customerName" class="block text-sm font-medium text-gray-700">Name</label>
+                    <input type="text" id="customerName" name="customerName" required
+                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2">
                 </div>
-            `;
-            foodGrid.appendChild(card);
+                <div>
+                    <label for="phoneNumber" class="block text-sm font-medium text-gray-700">Phone Number (India)</label>
+                    <input type="tel" id="phoneNumber" name="phoneNumber" required pattern="[0-9]{10}"
+                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2">
+                </div>
+                <div>
+                    <label for="customerAddress" class="block text-sm font-medium text-gray-700">Address</label>
+                    <textarea id="customerAddress" name="customerAddress" rows="3" required
+                              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2"></textarea>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Payment Option</label>
+                    <div class="mt-2 space-y-2">
+                        <div class="flex items-center">
+                            <input id="cod" name="paymentOption" type="radio" checked class="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300">
+                            <label for="cod" class="ml-3 block text-sm font-medium text-gray-700">Cash on Delivery</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input id="onlinePayment" name="paymentOption" type="radio" class="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300">
+                            <label for="onlinePayment" class="ml-3 block text-sm font-medium text-gray-700">Online Payment</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Online Payment Options (Hidden by default) -->
+                <div id="onlinePaymentOptions" class="space-y-4 hidden">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Choose Online Payment Method</label>
+                        <div class="mt-2 grid grid-cols-1 sm:grid-cols-3 gap-4">
+                            <div>
+                                <input type="radio" name="onlinePaymentOption" id="upi" value="UPI" class="hidden peer">
+                                <label for="upi" class="payment-option-label flex items-center justify-center p-4 border-2 border-gray-300 rounded-xl cursor-pointer text-center font-medium hover:bg-gray-50 peer-checked:bg-blue-50 peer-checked:border-blue-600">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 12h.01M16 12h.01M12 6h.01M6 12a6 6 0 1112 0 6 6 0 01-12 0z" />
+                                    </svg>
+                                    UPI
+                                </label>
+                            </div>
+                            <div>
+                                <input type="radio" name="onlinePaymentOption" id="creditCard" value="Credit Card" class="hidden peer">
+                                <label for="creditCard" class="payment-option-label flex items-center justify-center p-4 border-2 border-gray-300 rounded-xl cursor-pointer text-center font-medium hover:bg-gray-50 peer-checked:bg-blue-50 peer-checked:border-blue-600">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                                    </svg>
+                                    Credit Card
+                                </label>
+                            </div>
+                            <div>
+                                <input type="radio" name="onlinePaymentOption" id="netBanking" value="Net Banking" class="hidden peer">
+                                <label for="netBanking" class="payment-option-label flex items-center justify-center p-4 border-2 border-gray-300 rounded-xl cursor-pointer text-center font-medium hover:bg-gray-50 peer-checked:bg-blue-50 peer-checked:border-blue-600">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9v2m0 0v2m0-2h2m-2 0h-2m2 0a2 2 0 11-4 0 2 2 0 014 0zM12 21a9 9 0 100-18 9 9 0 000 18z" />
+                                    </svg>
+                                    Net Banking
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <div class="mt-6 text-right">
+                <button id="confirmOrderBtn" class="bg-green-600 text-white px-6 py-3 rounded-xl font-semibold shadow-md hover:bg-green-700 transition-colors duration-300 w-full">Confirm Order</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Online Payment Modal -->
+    <div id="paymentModal" class="modal fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center p-4 hidden z-50">
+        <div class="bg-white rounded-xl shadow-2xl p-6 w-full max-w-lg transform scale-95 transition-all duration-300 ease-in-out text-center">
+            <h2 class="text-2xl font-bold mb-4">Simulating <span id="paymentMethodName"></span> Payment...</h2>
+            <div class="flex justify-center items-center">
+                <div class="w-16 h-16 border-4 border-blue-400 border-t-transparent rounded-full animate-spin"></div>
+            </div>
+            <p class="text-gray-600 mt-4">Please wait, do not refresh or close this page.</p>
+        </div>
+    </div>
+    
+    <!-- Order Placed Success Modal -->
+    <div id="successModal" class="modal fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center p-4 hidden z-50">
+        <div class="bg-white rounded-xl shadow-2xl p-6 text-center transform scale-95 transition-all duration-300 ease-in-out">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-20 w-20 text-green-500 mx-auto mb-4" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+            </svg>
+            <h2 class="text-2xl font-bold mb-2">Order Placed Successfully!</h2>
+            <p class="text-gray-600">Your delicious food is on its way. Thank you for your order!</p>
+        </div>
+    </div>
+
+    <!-- JavaScript for Dashboard Logic -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            const foodCollections = [
+                {
+                    name: "Classic Margherita Pizza",
+                    description: "A simple yet delicious pizza topped with fresh tomatoes, mozzarella, and basil.",
+                    category: "main",
+                    image_url: "https://placehold.co/600x400/525252/FFF?text=Pizza",
+                    tags: ["Italian", "cheese", "vegetarian"],
+                    rate: 450
+                },
+                {
+                    name: "Decadent Chocolate Cake",
+                    description: "A rich, moist chocolate cake with a velvety chocolate ganache frosting.",
+                    category: "dessert",
+                    image_url: "https://placehold.co/600x400/525252/FFF?text=Cake",
+                    tags: ["chocolate", "sweet", "baked"],
+                    rate: 320
+                },
+                {
+                    name: "Spicy Chicken Tacos",
+                    description: "Tender chicken marinated in spices, served in soft tortillas with fresh salsa.",
+                    category: "main",
+                    image_url: "https://placehold.co/600x400/525252/FFF?text=Tacos",
+                    tags: ["Mexican", "spicy", "chicken"],
+                    rate: 280
+                },
+                {
+                    name: "Fresh Strawberry Smoothie",
+                    description: "A refreshing blend of strawberries, banana, and yogurt, perfect for a quick snack.",
+                    category: "drink",
+                    image_url: "https://placehold.co/600x400/525252/FFF?text=Smoothie",
+                    tags: ["fruit", "healthy", "blended"],
+                    rate: 180
+                },
+                {
+                    name: "Crispy Spring Rolls",
+                    description: "Fried rolls filled with vegetables, served with a sweet and sour dipping sauce.",
+                    category: "appetizer",
+                    image_url: "https://placehold.co/600x400/525252/FFF?text=Spring+Rolls",
+                    tags: ["Asian", "fried", "snack"],
+                    rate: 210
+                },
+                {
+                    name: "Grilled Salmon with Asparagus",
+                    description: "A healthy and flavorful dish of grilled salmon seasoned with lemon and herbs.",
+                    category: "main",
+                    image_url: "https://placehold.co/600x400/525252/FFF?text=Salmon",
+                    tags: ["seafood", "healthy", "dinner"],
+                    rate: 750
+                },
+                {
+                    name: "Fruit Salad with Mint",
+                    description: "A refreshing mix of seasonal fruits, including berries, melon, and citrus.",
+                    category: "dessert",
+                    image_url: "https://placehold.co/600x400/525252/FFF?text=Fruit+Salad",
+                    tags: ["fruit", "healthy", "light"],
+                    rate: 150
+                },
+                {
+                    name: "Iced Caramel Macchiato",
+                    description: "A popular coffee drink with a shot of espresso, milk, and sweet caramel drizzle.",
+                    category: "drink",
+                    image_url: "https://placehold.co/600x400/525252/FFF?text=Coffee",
+                    tags: ["coffee", "iced", "sweet"],
+                    rate: 220
+                },
+                {
+                    name: "Cheese and Charcuterie Board",
+                    description: "An elegant platter with a variety of cheeses, cured meats, and crackers.",
+                    category: "appetizer",
+                    image_url: "https://placehold.co/600x400/525252/FFF?text=Cheese+Board",
+                    tags: ["platter", "snack", "party"],
+                    rate: 680
+                },
+                {
+                    name: "Beef and Broccoli Stir-Fry",
+                    description: "Tender slices of beef and crisp broccoli tossed in a savory ginger sauce.",
+                    category: "main",
+                    image_url: "https://placehold.co/600x400/525252/FFF?text=Stir-Fry",
+                    tags: ["Chinese", "beef", "vegetables"],
+                    rate: 550
+                },
+                {
+                    name: "Mango Lassi",
+                    description: "A traditional Indian yogurt-based drink with fresh mango puree.",
+                    category: "drink",
+                    image_url: "https://placehold.co/600x400/525252/FFF?text=Mango+Lassi",
+                    tags: ["Indian", "yogurt", "fruit"],
+                    rate: 175
+                },
+                {
+                    name: "Paneer Tikka Masala",
+                    description: "Cubes of cottage cheese cooked in a rich, creamy tomato gravy.",
+                    category: "main",
+                    image_url: "https://placehold.co/600x400/525252/FFF?text=Paneer+Tikka",
+                    tags: ["Indian", "vegetarian", "curry"],
+                    rate: 420
+                },
+                {
+                    name: "Gulab Jamun",
+                    description: "Soft, spongy milk-based dumplings soaked in a sugar syrup.",
+                    category: "dessert",
+                    image_url: "https://placehold.co/600x400/525252/FFF?text=Gulab+Jamun",
+                    tags: ["Indian", "sweet", "dessert"],
+                    rate: 190
+                }
+            ];
+
+            const foodContainer = document.getElementById('foodContainer');
+            const searchInput = document.getElementById('searchInput');
+            const categoryFilter = document.getElementById('categoryFilter');
+            const cartCountElement = document.getElementById('cartCount');
+            const notificationElement = document.getElementById('notification');
+            const cartIcon = document.getElementById('cartIcon');
+            const cartModal = document.getElementById('cartModal');
+            const closeCartModalBtn = document.getElementById('closeCartModal');
+            const cartItemsContainer = document.getElementById('cartItems');
+            const cartTotalElement = document.getElementById('cartTotal');
+            const placeOrderBtn = document.getElementById('placeOrderBtn');
+            const detailsModal = document.getElementById('detailsModal');
+            const closeDetailsModalBtn = document.getElementById('closeDetailsModal');
+            const orderForm = document.getElementById('orderForm');
+            const confirmOrderBtn = document.getElementById('confirmOrderBtn');
+            const onlinePaymentRadio = document.getElementById('onlinePayment');
+            const onlinePaymentOptions = document.getElementById('onlinePaymentOptions');
+            const paymentModal = document.getElementById('paymentModal');
+            const paymentMethodName = document.getElementById('paymentMethodName');
+            const successModal = document.getElementById('successModal');
+            
+            let cart = [];
+
+            /**
+             * Updates the cart count displayed in the header badge.
+             */
+            const updateCartCount = () => {
+                cartCountElement.textContent = cart.length;
+            };
+
+            /**
+             * Adds a food item to the cart and shows a notification.
+             * @param {string} foodName - The name of the food item to add.
+             */
+            window.addToCart = (foodName) => {
+                const foodItem = foodCollections.find(food => food.name === foodName);
+                if (foodItem) {
+                    cart.push(foodItem);
+                    updateCartCount();
+
+                    // Show a temporary notification
+                    notificationElement.classList.remove('opacity-0', 'pointer-events-none');
+                    notificationElement.classList.add('opacity-100');
+                    setTimeout(() => {
+                        notificationElement.classList.add('opacity-0', 'pointer-events-none');
+                        notificationElement.classList.remove('opacity-100');
+                    }, 1500);
+                }
+            };
+
+            /**
+             * Renders the items in the cart modal.
+             */
+            const renderCart = () => {
+                cartItemsContainer.innerHTML = '';
+                if (cart.length === 0) {
+                    cartItemsContainer.innerHTML = '<p class="text-center text-gray-500 py-4">Your cart is empty.</p>';
+                    cartTotalElement.textContent = '₹0';
+                    return;
+                }
+
+                let total = 0;
+                cart.forEach(item => {
+                    total += item.rate;
+                    const cartItemHtml = `
+                        <div class="flex items-center justify-between py-2 border-b last:border-b-0">
+                            <span class="text-gray-800">${item.name}</span>
+                            <span class="font-semibold text-green-600">₹${item.rate}</span>
+                        </div>
+                    `;
+                    cartItemsContainer.insertAdjacentHTML('beforeend', cartItemHtml);
+                });
+                cartTotalElement.textContent = `₹${total}`;
+            };
+
+            /**
+             * Shows the cart modal.
+             */
+            const openCartModal = () => {
+                renderCart();
+                cartModal.classList.remove('hidden');
+                document.body.style.overflow = 'hidden'; // Prevents scrolling
+            };
+
+            /**
+             * Hides the cart modal.
+             */
+            const closeCartModal = () => {
+                cartModal.classList.add('hidden');
+                document.body.style.overflow = 'auto'; // Re-enables scrolling
+            };
+
+            /**
+             * Shows the details and payment modal.
+             */
+            const openDetailsModal = () => {
+                if (cart.length === 0) {
+                    return;
+                }
+                closeCartModal();
+                detailsModal.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+            };
+
+            /**
+             * Hides the details and payment modal.
+             */
+            const closeDetailsModal = () => {
+                detailsModal.classList.add('hidden');
+                document.body.style.overflow = 'auto';
+            };
+            
+            /**
+             * Shows the success modal and clears the cart.
+             */
+            const showSuccessModal = () => {
+                cart = []; // Clear the cart
+                updateCartCount();
+                
+                successModal.classList.remove('hidden');
+                document.body.style.overflow = 'hidden'; // Prevents scrolling
+
+                // Hide the success message after 3 seconds
+                setTimeout(() => {
+                    successModal.classList.add('hidden');
+                    document.body.style.overflow = 'auto';
+                }, 3000);
+            };
+
+            /**
+             * Simulates a payment process and shows the final success modal.
+             */
+            const simulatePayment = (method) => {
+                detailsModal.classList.add('hidden');
+                paymentModal.classList.remove('hidden');
+                paymentMethodName.textContent = method;
+
+                setTimeout(() => {
+                    paymentModal.classList.add('hidden');
+                    showSuccessModal();
+                }, 2000); // Simulate 2-second payment processing time
+            };
+            
+            /**
+             * Validates form details and proceeds with the order.
+             */
+            const confirmOrder = (event) => {
+                event.preventDefault();
+                
+                const name = document.getElementById('customerName').value;
+                const phone = document.getElementById('phoneNumber').value;
+                const address = document.getElementById('customerAddress').value;
+
+                if (!name || !phone || !address || phone.length !== 10) {
+                    // Replaced alert() with a custom message.
+                    document.getElementById('notification').textContent = 'Please fill out all the details correctly (Phone number must be 10 digits).';
+                    document.getElementById('notification').classList.remove('opacity-0', 'pointer-events-none', 'bg-green-500');
+                    document.getElementById('notification').classList.add('opacity-100', 'bg-red-500');
+                    setTimeout(() => {
+                        document.getElementById('notification').classList.add('opacity-0', 'pointer-events-none');
+                        document.getElementById('notification').classList.remove('opacity-100', 'bg-red-500');
+                        document.getElementById('notification').textContent = 'Item added to cart!';
+                        document.getElementById('notification').classList.add('bg-green-500');
+                    }, 3000);
+                    return;
+                }
+
+                const paymentOption = document.querySelector('input[name="paymentOption"]:checked').id;
+
+                if (paymentOption === 'onlinePayment') {
+                    const onlinePaymentMethod = document.querySelector('input[name="onlinePaymentOption"]:checked');
+                    if (!onlinePaymentMethod) {
+                        // Replaced alert() with a custom message.
+                        document.getElementById('notification').textContent = 'Please select an online payment method.';
+                        document.getElementById('notification').classList.remove('opacity-0', 'pointer-events-none', 'bg-green-500');
+                        document.getElementById('notification').classList.add('opacity-100', 'bg-red-500');
+                        setTimeout(() => {
+                            document.getElementById('notification').classList.add('opacity-0', 'pointer-events-none');
+                            document.getElementById('notification').classList.remove('opacity-100', 'bg-red-500');
+                            document.getElementById('notification').textContent = 'Item added to cart!';
+                            document.getElementById('notification').classList.add('bg-green-500');
+                        }, 3000);
+                        return;
+                    }
+                    simulatePayment(onlinePaymentMethod.value);
+                } else {
+                    closeDetailsModal();
+                    showSuccessModal();
+                }
+            };
+            
+            /**
+             * Renders a list of food items as cards in the dashboard.
+             * @param {Array} foodsToRender - The array of food objects to display.
+             */
+            const renderFoods = (foodsToRender) => {
+                foodContainer.innerHTML = ''; // Clear previous content
+                if (foodsToRender.length === 0) {
+                    foodContainer.innerHTML = '<p class="col-span-full text-center text-gray-500 text-lg py-12">No food items found matching your criteria.</p>';
+                    return;
+                }
+                foodsToRender.forEach(food => {
+                    const foodCard = `
+                        <div class="bg-white rounded-xl shadow-md overflow-hidden transform hover:scale-105 transition-all duration-300 ease-in-out border border-gray-200 cursor-pointer" onclick="addToCart('${food.name.replace(/'/g, "\\'")}')">
+                            <img src="${food.image_url}" alt="${food.name}" class="w-full h-48 object-cover">
+                            <div class="p-6">
+                                <h3 class="font-bold text-xl text-gray-900 truncate">${food.name}</h3>
+                                <p class="text-gray-600 text-sm mt-2 line-clamp-3">${food.description}</p>
+                                <div class="mt-4 flex flex-wrap gap-2">
+                                    <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full">${food.category.toUpperCase()}</span>
+                                    ${food.tags.map(tag => `<span class="bg-gray-200 text-gray-700 text-xs font-medium px-2.5 py-0.5 rounded-full">${tag}</span>`).join('')}
+                                </div>
+                                <div class="mt-4 text-right">
+                                    <span class="text-xl font-bold text-green-600">₹${food.rate}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    foodContainer.insertAdjacentHTML('beforeend', foodCard);
+                });
+            };
+
+            const filterAndSearch = () => {
+                const query = searchInput.value.toLowerCase();
+                const category = categoryFilter.value;
+
+                const filteredFoods = foodCollections.filter(food => {
+                    const matchesSearch = food.name.toLowerCase().includes(query) ||
+                                          food.description.toLowerCase().includes(query) ||
+                                          food.tags.some(tag => tag.toLowerCase().includes(query));
+                    const matchesCategory = category === 'all' || food.category === category;
+                    return matchesSearch && matchesCategory;
+                });
+
+                renderFoods(filteredFoods);
+            };
+
+            // Event listeners
+            searchInput.addEventListener('input', filterAndSearch);
+            categoryFilter.addEventListener('change', filterAndSearch);
+            cartIcon.addEventListener('click', openCartModal);
+            closeCartModalBtn.addEventListener('click', closeCartModal);
+            placeOrderBtn.addEventListener('click', openDetailsModal);
+            closeDetailsModalBtn.addEventListener('click', closeDetailsModal);
+            orderForm.addEventListener('submit', confirmOrder);
+            
+            // Toggle online payment options visibility
+            document.querySelectorAll('input[name="paymentOption"]').forEach(radio => {
+                radio.addEventListener('change', (e) => {
+                    if (e.target.id === 'onlinePayment') {
+                        onlinePaymentOptions.classList.remove('hidden');
+                    } else {
+                        onlinePaymentOptions.classList.add('hidden');
+                    }
+                });
+            });
+
+            // Close modals when clicking outside of them
+            cartModal.addEventListener('click', (e) => {
+                if (e.target.id === 'cartModal') {
+                    closeCartModal();
+                }
+            });
+
+            detailsModal.addEventListener('click', (e) => {
+                if (e.target.id === 'detailsModal') {
+                    closeDetailsModal();
+                }
+            });
+            
+            paymentModal.addEventListener('click', (e) => {
+                // Prevent closing the payment modal while processing
+                if (e.target.id === 'paymentModal') {
+                    // Do nothing
+                }
+            });
+
+            // Initial render
+            renderFoods(foodCollections);
         });
-}
-
-function addToCart(itemName) {
-    const item = foods.find(f => f.name === itemName);
-    cart.push(item);
-    alert(`${itemName} added to cart!`);
-    renderCart();
-}
-
-function renderCart() {
-    const cartItems = document.getElementById('cartItems');
-    cartItems.innerHTML = "";
-    if (cart.length === 0) {
-        cartItems.innerHTML = "<li>Your cart is empty.</li>";
-        return;
-    }
-    cart.forEach(item => {
-        const li = document.createElement('li');
-        li.textContent = `${item.name} - ${item.price}`;
-        cartItems.appendChild(li);
-    });
-}
-
-function confirmOrder() {
-    if (cart.length === 0) {
-        alert("Your cart is empty!");
-        return;
-    }
-    orders.push([...cart]);
-    cart = [];
-    alert("Your order has been confirmed!");
-    renderCart();
-    renderOrders();
-    showSection('orders');
-}
-
-function renderOrders() {
-    const orderList = document.getElementById('orderList');
-    orderList.innerHTML = "";
-    if (orders.length === 0) {
-        orderList.innerHTML = "<li>No orders placed yet.</li>";
-        return;
-    }
-    orders.forEach((order, index) => {
-        const li = document.createElement('li');
-        li.innerHTML = `<strong>Order ${index + 1}:</strong> ${order.map(i => i.name).join(", ")}`;
-        orderList.appendChild(li);
-    });
-}
-
-function showSection(sectionId) {
-    document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
-    document.getElementById(sectionId).classList.add('active');
-}
-
-document.getElementById('searchInput').addEventListener('input', e => {
-    renderFoods(e.target.value);
-});
-
-renderFoods();
-</script>
+    </script>
 </body>
 </html>
